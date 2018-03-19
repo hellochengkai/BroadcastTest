@@ -22,10 +22,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        netWorkChangeReceiver = new NetWorkChangeReceiver();
-        registerReceiver(netWorkChangeReceiver,intentFilter);
+//        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+//        netWorkChangeReceiver = new NetWorkChangeReceiver();
+//        registerReceiver(netWorkChangeReceiver,intentFilter);
         findViewById(R.id.button).setOnClickListener(this);
+        intentFilter.addAction("com.thunder.ktv.broadcasttest.LOCAL_BROADCAST");
+        LocalReceiver localReceiver = new LocalReceiver();
+        localBroadcastManager.registerReceiver(localReceiver,intentFilter);
     }
 
     @Override
@@ -38,9 +41,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button:{
-                Intent intent = new Intent("com.thunder.ktv.broadcasttest.MY_BROADCAST");
+                Intent intent = new Intent("com.thunder.ktv.broadcasttest.LOCAL_BROADCAST");
 //                sendBroadcast(intent);
-                sendOrderedBroadcast(intent,null);
+//                sendOrderedBroadcast(intent,null);
+                localBroadcastManager.sendBroadcast(intent);
                 break;
             }
         }
@@ -51,6 +55,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             Toast.makeText(context,"NetWorkChangeReceiver",Toast.LENGTH_SHORT).show();
+        }
+    }
+    class LocalReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"LocalReceiver",Toast.LENGTH_SHORT).show();
         }
     }
 }
